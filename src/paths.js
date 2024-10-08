@@ -1,0 +1,20 @@
+export const paths = {
+  home: '/',
+  auth: { signIn: '/authentication/sign-in', resetPassword: '/authentication/reset-password' },
+  dashboard: {
+    overview: '/dashboard',
+    account: '/dashboard/account',
+    customers: '/dashboard/customers',
+    users: '/dashboard/users',
+    donors: '/dashboard/donors',
+    extraExpenditures: '/dashboard/extra-expenditures',
+    monthlyExpenditures: '/dashboard/monthly-expenditures',
+    addConversionHistory: '/dashboard/conversion-history',
+    demandLists: '/dashboard/demand-lists',
+    expenseHistory: '/dashboard/expense-history',
+    settings: '/dashboard/settings',
+    addUser: '/dashboard/users/add',
+    beneficiaries: '/dashboard/beneficiaries',
+  },
+  errors: { notFound: '/errors/not-found' },
+};
