@@ -15,8 +15,9 @@ import SoftInput from "components/SoftInput";
 
 function LinkAccount() {
   const [formData, setFormData] = useState({
-    upworkEmail: "",
-    upworkPassword: "",
+    email: "",
+    password: "",
+    security_answer: ""
   });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -37,49 +38,39 @@ function LinkAccount() {
 
   const handleVerifyCredentials = async () => {
     // Check if email is valid
-    if (!isValidEmail(formData.upworkEmail)) {
-      setError("Please enter a valid email address.");
-      return;
+    if (!isValidEmail(formData.email)) {
+        setError("Please enter a valid email address.");
+        return;
     }
 
     // Make sure required fields are filled
-    if (!formData.upworkEmail || !formData.upworkPassword) {
-      setError("Please enter your Upwork email and password.");
-      return;
+    if (!formData.email || !formData.password || !formData.security_answer) {
+        setError("Please enter your Upwork email and password.");
+        return;
     }
 
     setLoading(true); // Start loading
     try {
-      // Send request to verify Upwork credentials (replace with your API)
-      const response = await axios.post(`${envConfig.backend}/verifyUpwork`, {
-        email: formData.upworkEmail,
-        password: formData.upworkPassword,
-      });
+        // Send request to verify Upwork credentials (replace with your API)
+        const response = await axios.post(`${envConfig.backend}/addAccount`, formData, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("auth-token")}`,
+            },
+        });
 
-      if (response.data.verified) {
-        setVerified(true); // Mark as verified if credentials are correct
-      } else {
-        setError("Verification failed. Please check your credentials.");
-      }
+        if (response.data.verified) {
+            setVerified(true);
+            localStorage.setItem('pagesAccess', response.data.pagesAccess);
+            navigate("/accounts");
+
+        } else {
+            setError("Verification failed. Please check your credentials and try again");
+        }
+        
     } catch (error) {
-      setError(error.response?.data?.message || "Something went wrong. Please try again.");
+        setError(error.response?.data?.message || "Something went wrong. Please try again.");
     } finally {
-      setLoading(false); // Stop loading
-    }
-  };
-
-  const handleSaveAccount = async () => {
-    try {
-      // API call to save the verified account to localhost:5000/onboard
-      await axios.post(`${envConfig.backend}/onboard`, formData, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("auth-token")}`,
-        },
-      });
-
-      navigate("/dashboard");
-    } catch (error) {
-      setError(error.response?.data?.message || "Something went wrong. Please try again.");
+        setLoading(false);
     }
   };
 
@@ -105,8 +96,8 @@ function LinkAccount() {
             </SoftBox>
             <SoftInput
               label="Upwork Email"
-              name="upworkEmail"
-              value={formData.upworkEmail}
+              name="email"
+              value={formData.email}
               onChange={handleInputChange}
               fullWidth
               disabled={verified} // Disable after verification
@@ -116,22 +107,41 @@ function LinkAccount() {
             />
           </SoftBox>
 
-          <SoftBox mb={2} sx={{ width: "400px" }}>
+            <SoftBox mb={2} sx={{ width: "400px" }}>
+                <SoftBox mb={1} ml={0.5}>
+                    <SoftTypography component="label" variant="caption" fontWeight="bold">
+                        Upwork Password
+                    </SoftTypography>
+                </SoftBox>
+                <SoftInput
+                    placeholder="Password"
+                    label="Upwork Password"
+                    name="password"
+                    type="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    fullWidth
+                    disabled={verified}
+                    required
+                />
+            </SoftBox>
+
+            <SoftBox mb={2} sx={{ width: "400px" }}>
             <SoftBox mb={1} ml={0.5}>
               <SoftTypography component="label" variant="caption" fontWeight="bold">
-                Upwork Password
+                Upwork Security Question Answer
               </SoftTypography>
             </SoftBox>
             <SoftInput
-              placeholder="Password"
-              label="Upwork Password"
-              name="upworkPassword"
-              type="password"
-              value={formData.upworkPassword}
+              label="Upwork Security Answer"
+              name="security_answer"
+              value={formData.security_answer}
               onChange={handleInputChange}
               fullWidth
-              disabled={verified}
+              disabled={verified} // Disable after verification
               required
+              type="text"
+              placeholder="Upwork Security Answer"
             />
           </SoftBox>
 
@@ -164,14 +174,6 @@ function LinkAccount() {
             </Typography>
           )}
 
-          {/* Save Account Button (Visible only after verification) */}
-          {verified && (
-            <SoftBox mt={4} mb={1} display="flex" justifyContent="center">
-              <SoftButton variant="gradient" color="success" onClick={handleSaveAccount}>
-                Save and Add Account
-              </SoftButton>
-            </SoftBox>
-          )}
         </SoftBox>
       </SoftBox>
     </DashboardLayout>

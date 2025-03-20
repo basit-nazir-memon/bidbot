@@ -1,17 +1,3 @@
-/**
-=========================================================
-* Soft UI Dashboard React - v4.0.1
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
 
 // react-router-dom components
 import { Link } from "react-router-dom";
@@ -29,8 +15,16 @@ import SoftBox from "components/SoftBox";
 import SoftTypography from "components/SoftTypography";
 import SoftButton from "components/SoftButton";
 import SoftAvatar from "components/SoftAvatar";
+import { useState } from "react";
 
 function DefaultProjectCard({ image, label, title, description, action, authors }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const handleToggle = () => {
+    setIsExpanded((prev) => !prev);
+  };
+
+
   const renderAuthors = authors.map(({ image: media, name }) => (
     <Tooltip key={name} title={name} placement="bottom">
       <SoftAvatar
@@ -68,9 +62,10 @@ function DefaultProjectCard({ image, label, title, description, action, authors 
           title={title}
           sx={{
             maxWidth: "100%",
+            maxHeight: '150px',
             margin: 0,
             boxShadow: ({ boxShadows: { md } }) => md,
-            objectFit: "cover",
+            objectFit: "fill",
             objectPosition: "center",
           }}
         />
@@ -109,9 +104,23 @@ function DefaultProjectCard({ image, label, title, description, action, authors 
             </SoftTypography>
           )}
         </SoftBox>
-        <SoftBox mb={3} lineHeight={0}>
-          <SoftTypography variant="button" fontWeight="regular" color="text">
+        <SoftBox mb={3} lineHeight={1.5}>
+          <SoftTypography
+            variant="button"
+            fontWeight="regular"
+            color="text"
+            sx={{
+              display: "-webkit-box",
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              WebkitLineClamp: isExpanded ? undefined : 5, // Limit to 5 lines
+              cursor: "pointer",
+            }}
+            onClick={handleToggle}
+          >
             {description}
+            {!isExpanded && description.length > 0 && " ...see more"}
           </SoftTypography>
         </SoftBox>
         <SoftBox display="flex" justifyContent="space-between" alignItems="center">

@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // react-router-dom components
 import { useLocation, NavLink, useNavigate  } from "react-router-dom";
@@ -43,6 +43,8 @@ import sidenavLogoLabel from "examples/Sidenav/styles/sidenav";
 // Soft UI Dashboard React context
 import { useSoftUIController, setMiniSidenav } from "context";
 import SpaceShip from "examples/Icons/SpaceShip";
+import { ImportExportOutlined, Logout } from "@mui/icons-material";
+import { Box, MenuItem, Popover, Stack, Typography } from "@mui/material";
 
 function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const [controller, dispatch] = useSoftUIController();
@@ -50,6 +52,25 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const location = useLocation();
   const { pathname } = location;
   const collapseName = pathname.split("/").slice(1)[0];
+
+  const [anchorEl, setAnchorEl] = useState(null); // State to control Popover anchor
+  const [selectedOption, setSelectedOption] = useState(""); // State to track selected option
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget); // Set the anchor element when clicked
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null); // Close the popover when clicked outside or an option is selected
+  };
+
+  const handleOptionSelect = (option) => {
+    setSelectedOption(option); // Update the selected option
+    handleClose(); // Close the popover after selection
+  };
+
+  const open = Boolean(anchorEl); // Check if popover should be open
+  const id = open ? "simple-popover" : undefined;
 
 
   const closeSidenav = () => setMiniSidenav(dispatch, true);
@@ -160,19 +181,95 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
             <Icon sx={{ fontWeight: "bold" }}>close</Icon>
           </SoftTypography>
         </SoftBox>
-        <SoftBox component={NavLink} to="/" display="flex" alignItems="center">
-          {brand && <SoftBox component="img" src={brand} alt="Soft UI Logo" width="2rem" />}
-          <SoftBox
+        <SoftBox component={NavLink} to="/dashboard" display="flex" alignItems="center">
+          {brand && <SoftBox component="img" src={brand} alt="Bidbot Logo" width="150px"  />}
+          {/* <SoftBox
             width={!brandName && "100%"}
             sx={(theme) => sidenavLogoLabel(theme, { miniSidenav })}
           >
             <SoftTypography component="h6" variant="button" fontWeight="medium">
               {brandName}
             </SoftTypography>
-          </SoftBox>
+          </SoftBox> */}
         </SoftBox>
       </SoftBox>
       <Divider />
+
+      <Stack spacing={2} sx={{ p: 1 }}>
+        <Box
+          sx={{
+            alignItems: 'center',
+            backgroundColor: 'var(--mui-palette-neutral-950)',
+            border: '1px solid gray',
+            borderRadius: '12px',
+            cursor: 'pointer',
+            display: 'flex',
+            p: '4px 12px',
+          }}
+          onClick={handleClick}
+        >
+          <Box sx={{ flex: '1 1 auto' }}>
+            <SoftTypography 
+              display="block"
+              variant="caption"
+              // fontWeight="light"
+            >
+              Workspace
+            </SoftTypography>
+            <Typography color="inherit" variant="subtitle2">
+              {localStorage.getItem('role')}
+            </Typography>
+          </Box>
+          <ImportExportOutlined />
+        </Box>
+      </Stack>
+
+      {/* Popover */}
+
+      {
+        localStorage.getItem('role') == "Company Admin" && (
+          <Popover
+            id={id}
+            open={open}
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "left",
+            }}
+            sx={{
+              "& .MuiPaper-root": {
+                backgroundColor: "#fff", // Set the background color to white
+                boxShadow: "0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12)", // Keep your custom box shadow
+                borderRadius: "12px", // Adjust border-radius as needed
+                padding: "0.5rem", // Adjust padding as needed
+              },
+            }}
+            // sx={{backgroundColor: "white", opacity: 1}}
+          >
+            <Box sx={{ minWidth: 200, padding: 2 }}>
+              <MenuItem onClick={() => handleOptionSelect("Option 1: Change Role")}>
+                Change Role
+              </MenuItem>
+              <MenuItem onClick={() => handleOptionSelect("Option 2: Manage Users")}>
+                Manage Users
+              </MenuItem>
+              <MenuItem onClick={() => handleOptionSelect("Option 3: Settings")}>
+                Settings
+              </MenuItem>
+            </Box>
+          </Popover>
+        )
+      }
+      
+
+
+      <Divider />
+      
       <List>
         {renderRoutes}
         <Link
@@ -185,7 +282,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           <SidenavCollapse
             color={"primary"}
             name={'Logout'}
-            icon={<SpaceShip size="12px" />}
+            icon={<Logout size="12px" />}
             active={'logout' === collapseName}
             noCollapse={true}
           />

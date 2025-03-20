@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Soft UI Dashboard React - v4.0.1
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Icon from "@mui/material/Icon";
@@ -42,10 +27,44 @@ import OrderOverview from "layouts/dashboard/components/OrderOverview";
 import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 import gradientLineChartData from "layouts/dashboard/data/gradientLineChartData";
 import { AuthGuard } from "components/auth/auth-guard";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { envConfig } from "env";
+import { Line, Pie } from "react-chartjs-2";
+import { Box, Card } from "@mui/material";
 
 function Dashboard() {
   const { size } = typography;
   const { chart, items } = reportsBarChartData;
+
+  const [summary, setSummary] = useState({
+    name: "",
+    totalEarnings: 0,
+    totalJobs: 0,
+    totalConnects: 0,
+  });
+
+  // Fetch data from the API
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${envConfig.backend}/dashboard`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("auth-token")}`,
+          },
+        });
+        setSummary(response.data);
+        console.log(response.data);
+
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
 
   return (
     <AuthGuard>
@@ -56,100 +75,307 @@ function Dashboard() {
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6} xl={3}>
                 <MiniStatisticsCard
-                  title={{ text: "today's money" }}
-                  count="$53,000"
-                  percentage={{ color: "success", text: "+55%" }}
+                  title={{ text: "Total Earnings" }}
+                  count={`$${summary?.totalEarnings || 0}`}
                   icon={{ color: "info", component: "paid" }}
                 />
               </Grid>
               <Grid item xs={12} sm={6} xl={3}>
                 <MiniStatisticsCard
-                  title={{ text: "today's users" }}
-                  count="2,300"
-                  percentage={{ color: "success", text: "+3%" }}
-                  icon={{ color: "info", component: "public" }}
+                  title={{ text: "Jobs Completed" }}
+                  count={`${summary?.totalCompletedJobs || 0} Job(s)`}
+                  icon={{ color: "info", component: "done" }}
                 />
               </Grid>
               <Grid item xs={12} sm={6} xl={3}>
                 <MiniStatisticsCard
-                  title={{ text: "new clients" }}
-                  count="+3,462"
-                  percentage={{ color: "error", text: "-2%" }}
-                  icon={{ color: "info", component: "emoji_events" }}
+                  title={{ text: "Ongoing Jobs" }}
+                  count={`${summary?.totalOngoingJobs || 0} Jobs`}
+                  // percentage={{ color: "error", text: "-2%" }}
+                  icon={{ color: "info", component: "update" }}
                 />
               </Grid>
               <Grid item xs={12} sm={6} xl={3}>
                 <MiniStatisticsCard
-                  title={{ text: "sales" }}
-                  count="$103,430"
-                  percentage={{ color: "success", text: "+5%" }}
-                  icon={{
-                    color: "info",
-                    component: "shopping_cart",
-                  }}
+                  title={{ text: "Connects" }}
+                  count={summary?.totalConnects || 0}
+                  icon={{ color: "info", component: "toll" }}
                 />
+              </Grid>
+            </Grid>
+          </SoftBox>
+          {
+            (localStorage.getItem('role') === "Company Admin" || localStorage.getItem('role') === "Individual Freelancer") && (
+            <SoftBox mb={3}>
+              <Grid container spacing={3}>
+                <Grid item xs={12} lg={7}>
+                  <BuildByDevelopers
+                    title={`Welcome ${summary.name}`}
+                    subtitle={`Link Your Accounts`}
+                    description={"Link your Upwork account to BidBot and let automation handle job bidding while you focus on what matters most—executing your projects efficiently!"}
+                    buttonText={"Lets Go"}
+                    buttonLink={'/accounts'}
+                  />
+                </Grid>
+                <Grid item xs={12} lg={5}>
+                  <WorkWithTheRockets />
+                </Grid>
+              </Grid>
+            </SoftBox>
+            )
+          }
+          <SoftBox mb={3}>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <Card sx={{ borderRadius: 2, boxShadow: "0 8px 16px 0 rgba(0,0,0,0.1)", height: "100%" }}>
+                  <SoftBox p={3}>
+                    <SoftTypography variant="h6" fontWeight="medium" mb={2}>
+                      Monthly Earnings
+                    </SoftTypography>
+                    <Box height={250}>
+                      <Line
+                        data={
+                          {
+                            labels: summary?.monthlyHistory?.labels,
+                            datasets: [
+                              {
+                                label: "Monthly Earnings ($)",
+                                data: summary?.monthlyHistory?.totalEarningsData,
+                                borderColor: "rgba(75, 192, 192, 1)",
+                                backgroundColor: "rgba(75, 192, 192, 0.2)",
+                                fill: true,
+                              },
+                            ],
+                          }
+                        }
+                        options={{
+                          responsive: true,
+                          maintainAspectRatio: false,
+                          plugins: {
+                            legend: {
+                              display: false,
+                            },
+                          },
+                          scales: {
+                            y: {
+                              beginAtZero: false,
+                            },
+                          },
+                        }}
+                      />
+                    </Box>
+                  </SoftBox>
+                </Card>
               </Grid>
             </Grid>
           </SoftBox>
           <SoftBox mb={3}>
             <Grid container spacing={3}>
-              <Grid item xs={12} lg={7}>
-                <BuildByDevelopers />
+              {/* <Grid item xs={12} md={4}>
+              <Card sx={{ borderRadius: 2, boxShadow: "0 8px 16px 0 rgba(0,0,0,0.1)", height: "100%" }}>
+                <SoftBox p={3}>
+                  <SoftTypography variant="h6" fontWeight="medium" mb={2}>
+                    Monthly Earnings
+                  </SoftTypography>
+                  <Box height={250}>
+                    <Line
+                      data={
+                        {
+                          labels: summary?.monthlyEarnings?.labels,
+                          datasets: [
+                            {
+                              label: "Monthly Earnings ($)",
+                              data: summary?.monthlyEarnings?.data,
+                              borderColor: "rgba(75, 192, 192, 1)",
+                              backgroundColor: "rgba(75, 192, 192, 0.2)",
+                              fill: true,
+                            },
+                          ],
+                        }
+                      }
+                      options={{
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                          legend: {
+                            display: false,
+                          },
+                        },
+                        scales: {
+                          y: {
+                            beginAtZero: false,
+                          },
+                        },
+                      }}
+                    />
+                  </Box>
+                </SoftBox>
+              </Card>
+            </Grid> */}
+              <Grid item xs={12} md={4}>
+                <Card sx={{ borderRadius: 2, boxShadow: "0 8px 16px 0 rgba(0,0,0,0.1)", height: "100%" }}>
+                  <SoftBox p={3}>
+                    <SoftTypography variant="h6" fontWeight="medium" mb={2}>
+                      Proposal Status
+                    </SoftTypography>
+                    <Box height={250}>
+                      <Pie
+                        data={
+                          {
+                            labels: ["Accepted", "Pending"],
+                            datasets: [
+                              {
+                                label: "Proposal Status",
+                                data: [summary?.proposalStatus?.accepted, summary?.proposalStatus?.waiting],
+                                backgroundColor: [
+                                  "rgba(75, 192, 192, 0.6)",
+                                  "rgba(153, 102, 255, 0.6)",
+                                ],
+                                borderColor: [
+                                  "rgba(75, 192, 192, 1)",
+                                  "rgba(153, 102, 255, 1)",
+                                ],
+                                borderWidth: 1,
+                              },
+                            ],
+                          }
+                        }
+                        options={{
+                          responsive: true,
+                          maintainAspectRatio: false,
+                          plugins: {
+                            legend: {
+                              position: "bottom",
+                            },
+                          },
+                        }}
+                      />
+                    </Box>
+                  </SoftBox>
+                </Card>
               </Grid>
-              <Grid item xs={12} lg={5}>
-                <WorkWithTheRockets />
+              <Grid item xs={12} md={4}>
+                <Card sx={{ borderRadius: 2, boxShadow: "0 8px 16px 0 rgba(0,0,0,0.1)", height: "100%" }}>
+                  <SoftBox p={3}>
+                    <SoftTypography variant="h6" fontWeight="medium" mb={2}>
+                      Project Status
+                    </SoftTypography>
+                    <Box height={250}>
+                      <Pie
+                        data={
+                          {
+                            labels: ["Suggested", "Not Started", "In Progress", "Completed"],
+                            datasets: [
+                              {
+                                label: "Project Status",
+                                data: [
+                                  summary?.projectStatus?.suggested,
+                                  summary?.projectStatus?.notStarted,
+                                  summary?.projectStatus?.ongoing,
+                                  summary?.projectStatus?.completed,
+                                ],
+                                backgroundColor: [
+                                  "rgba(255, 99, 132, 0.6)",
+                                  "rgba(255, 206, 86, 0.6)",
+                                  "rgba(54, 162, 235, 0.6)",
+                                  "rgba(75, 192, 192, 0.6)",
+                                ],
+                                borderColor: [
+                                  "rgba(255, 99, 132, 1)",
+                                  "rgba(255, 206, 86, 1)",
+                                  "rgba(54, 162, 235, 1)",
+                                  "rgba(75, 192, 192, 1)",
+                                ],
+                                borderWidth: 1,
+                              },
+                            ],
+                          }
+                        }
+                        options={{
+                          responsive: true,
+                          maintainAspectRatio: false,
+                          plugins: {
+                            legend: {
+                              position: "bottom",
+                            },
+                          },
+                        }}
+                      />
+                    </Box>
+                  </SoftBox>
+                </Card>
               </Grid>
-            </Grid>
-          </SoftBox>
-          <SoftBox mb={3}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} lg={5}>
-                <ReportsBarChart
-                  title="active users"
-                  description={
-                    <>
-                      (<strong>+23%</strong>) than last week
-                    </>
+              <Grid item xs={12} md={4}>
+                <Card sx={{ borderRadius: 2, boxShadow: "0 8px 16px 0 rgba(0,0,0,0.1)", height: "100%" }}>
+                  <SoftBox p={3}>
+                    <SoftTypography variant="h6" fontWeight="medium" mb={2}>
+                      Support Ticket Stats
+                    </SoftTypography>
+                    <Box height={250}>
+                      <Pie
+                        data={
+                          {
+                            labels: ["Active", "Resolved", "Cancelled"],
+                            datasets: [
+                              {
+                                label: "Support Ticket Status",
+                                data: [
+                                  summary?.stats?.active, summary?.stats?.resolved, summary?.stats?.cancelled
+                                ],
+                                backgroundColor: [
+                                  "rgba(54, 162, 235, 0.6)",
+                                  "rgba(75, 192, 192, 0.6)",
+                                  "rgba(255, 99, 132, 0.6)",
+                                ],
+                                borderColor: [
+                                  "rgba(54, 162, 235, 1)",
+                                  "rgba(75, 192, 192, 1)",
+                                  "rgba(255, 99, 132, 1)",
+                                ],
+                                borderWidth: 1,
+                              },
+                            ],
+                          }
+                        }
+                        options={{
+                          responsive: true,
+                          maintainAspectRatio: false,
+                          plugins: {
+                            legend: {
+                              position: "bottom",
+                            },
+                          },
+                        }}
+                      />
+                    </Box>
+                  </SoftBox>
+                </Card>
+              </Grid>
+              {/* <Grid item xs={12} md={4}>
+              <PieChart chart={
+                {
+                  labels: ["Active", "Resolved", "Cancelled"],
+                  datasets: {
+                    label: ["Active", "Resolved", "Canceled"],
+                    data: [summary?.stats?.active, summary?.stats?.resolved, summary?.stats?.cancelled],
+                    backgroundColors: ["info", "success", "error"]
                   }
-                  chart={chart}
-                  items={items}
-                />
-              </Grid>
-              <Grid item xs={12} lg={7}>
-                <GradientLineChart
-                  title="Sales Overview"
-                  description={
-                    <SoftBox display="flex" alignItems="center">
-                      <SoftBox fontSize={size.lg} color="success" mb={0.3} mr={0.5} lineHeight={0}>
-                        <Icon className="font-bold">arrow_upward</Icon>
-                      </SoftBox>
-                      <SoftTypography variant="button" color="text" fontWeight="medium">
-                        4% more{" "}
-                        <SoftTypography variant="button" color="text" fontWeight="regular">
-                          in 2021
-                        </SoftTypography>
-                      </SoftTypography>
-                    </SoftBox>
-                  }
-                  height="20.25rem"
-                  chart={gradientLineChartData}
-                />
-              </Grid>
+                }} />
+            </Grid> */}
             </Grid>
           </SoftBox>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={8}>
-              <Projects />
+            <Grid item xs={12} md={6} lg={12}>
+              <Projects data={summary?.ongoingJobs} />
             </Grid>
-            <Grid item xs={12} md={6} lg={4}>
+            {/* <Grid item xs={12} md={6} lg={4}>
               <OrderOverview />
-            </Grid>
+            </Grid> */}
           </Grid>
         </SoftBox>
-        <Footer />
       </DashboardLayout>
     </AuthGuard>
-    
+
   );
 }
 

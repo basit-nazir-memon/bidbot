@@ -9,6 +9,7 @@ import Card from "@mui/material/Card";
 import Checkbox from "@mui/material/Checkbox";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
+import CircularProgress from "@mui/material/CircularProgress"; // Import CircularProgress
 
 // Soft UI Dashboard React components
 import SoftBox from "components/SoftBox";
@@ -33,6 +34,7 @@ function SignUp() {
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false); // State to manage loading
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
@@ -74,6 +76,7 @@ function SignUp() {
     }
 
     try {
+      setLoading(true); // Start loader
       const response = await axios.post(`${envConfig.backend}/register`, formData);
       
       setSuccessMessage("User Registered Successfully! Redirecting to Sign In...");
@@ -86,6 +89,8 @@ function SignUp() {
     } catch (error) {
       console.error(error); // Handle error
       setError(error.response?.data?.error || "Failed to register. Please try again.");
+    } finally {
+      setLoading(false); // Stop loader after submission
     }
   };
 
@@ -98,13 +103,13 @@ function SignUp() {
       <Card>
         <SoftBox p={3} mb={1} textAlign="center">
           <SoftTypography variant="h5" fontWeight="medium">
-            Register with
+            Register
           </SoftTypography>
         </SoftBox>
-        <SoftBox mb={2}>
+        {/* <SoftBox mb={2}>
           <Socials />
-        </SoftBox>
-        <Separator />
+        </SoftBox> */}
+        {/* <Separator /> */}
         <SoftBox pt={2} pb={3} px={3}>
           <SoftBox component="form" role="form" onSubmit={handleSubmit}>
             <SoftBox mb={2}>
@@ -187,8 +192,8 @@ function SignUp() {
               </SoftTypography>
             </SoftBox>
             <SoftBox mt={4} mb={1}>
-              <SoftButton variant="gradient" color="dark" fullWidth type="submit">
-                Sign up
+              <SoftButton variant="gradient" color="dark" fullWidth type="submit" disabled={loading}>
+                {loading ? <CircularProgress size={24} color="inherit" /> : "Sign up"}
               </SoftButton>
             </SoftBox>
             <SoftBox mt={3} textAlign="center">

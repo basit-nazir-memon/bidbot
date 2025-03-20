@@ -71,7 +71,7 @@ function UserOnboarding() {
             });
 
             if (response.data.pagesAccess){
-              localStorage.setItem('pagesAccess', JSON.stringify(response.data.pagesAccess));
+                localStorage.setItem('pagesAccess', JSON.stringify(response.data.pagesAccess));
             }
 
             navigate("/dashboard");

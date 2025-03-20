@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Soft UI Dashboard React - v4.0.1
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 // react-routers components
 import { Link } from "react-router-dom";
 
@@ -32,8 +17,9 @@ import SoftTypography from "components/SoftTypography";
 // Soft UI Dashboard React base styles
 import colors from "assets/theme/base/colors";
 import typography from "assets/theme/base/typography";
+import { useState } from "react"; // Import useState
 
-function ProfileInfoCard({ title, description, info, social, action }) {
+function ProfileInfoCard({ title, description, info, action }) {
   const labels = [];
   const values = [];
   const { socialMediaColors } = colors;
@@ -54,6 +40,9 @@ function ProfileInfoCard({ title, description, info, social, action }) {
   // Push the object values into the values array
   Object.values(info).forEach((el) => values.push(el));
 
+  // State for managing the description view
+  const [isExpanded, setIsExpanded] = useState(false);
+
   // Render the card info items
   const renderItems = labels.map((label, key) => (
     <SoftBox key={label} display="flex" py={1} pr={2}>
@@ -66,23 +55,10 @@ function ProfileInfoCard({ title, description, info, social, action }) {
     </SoftBox>
   ));
 
-  // Render the card social media icons
-  const renderSocial = social.map(({ link, icon, color }) => (
-    <SoftBox
-      key={color}
-      component="a"
-      href={link}
-      target="_blank"
-      rel="noreferrer"
-      fontSize={size.lg}
-      color={socialMediaColors[color].main}
-      pr={1}
-      pl={0.5}
-      lineHeight={1}
-    >
-      {icon}
-    </SoftBox>
-  ));
+  // Function to handle toggling the description
+  const handleToggle = () => {
+    setIsExpanded((prev) => !prev);
+  };
 
   return (
     <Card sx={{ height: "100%" }}>
@@ -90,16 +66,34 @@ function ProfileInfoCard({ title, description, info, social, action }) {
         <SoftTypography variant="h6" fontWeight="medium" textTransform="capitalize">
           {title}
         </SoftTypography>
-        <SoftTypography component={Link} to={action.route} variant="body2" color="secondary">
-          <Tooltip title={action.tooltip} placement="top">
-            <Icon>edit</Icon>
-          </Tooltip>
-        </SoftTypography>
+        {
+          action && (
+            <SoftTypography component={Link} to={action.route} variant="body2" color="secondary">
+              <Tooltip title={action.tooltip} placement="top">
+                <Icon>edit</Icon>
+              </Tooltip>
+            </SoftTypography>
+          )
+        }
       </SoftBox>
       <SoftBox p={2}>
         <SoftBox mb={2} lineHeight={1}>
-          <SoftTypography variant="button" color="text" fontWeight="regular">
+          <SoftTypography
+            variant="button"
+            color="text"
+            fontWeight="regular"
+            sx={{
+              display: "-webkit-box",
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              WebkitLineClamp: isExpanded ? undefined : 5, // Limit to 5 lines
+              cursor: "pointer",
+            }}
+            onClick={handleToggle}
+          >
             {description}
+            {!isExpanded && description && description.length > 0 && " ...see more"}
           </SoftTypography>
         </SoftBox>
         <SoftBox opacity={0.3}>
@@ -107,12 +101,6 @@ function ProfileInfoCard({ title, description, info, social, action }) {
         </SoftBox>
         <SoftBox>
           {renderItems}
-          <SoftBox display="flex" py={1} pr={2}>
-            <SoftTypography variant="button" fontWeight="bold" textTransform="capitalize">
-              social: &nbsp;
-            </SoftTypography>
-            {renderSocial}
-          </SoftBox>
         </SoftBox>
       </SoftBox>
     </Card>
@@ -124,7 +112,6 @@ ProfileInfoCard.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   info: PropTypes.objectOf(PropTypes.string).isRequired,
-  social: PropTypes.arrayOf(PropTypes.object).isRequired,
   action: PropTypes.shape({
     route: PropTypes.string.isRequired,
     tooltip: PropTypes.string.isRequired,

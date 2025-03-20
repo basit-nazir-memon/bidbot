@@ -1,47 +1,9 @@
-/**
-=========================================================
-* Soft UI Dashboard React - v4.0.1
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-/** 
-  All of the routes for the Soft UI Dashboard React are added here,
-  You can add a new route, customize the routes and delete the routes here.
-
-  Once you add a new route on this file it will be visible automatically on
-  the Sidenav.
-
-  For adding a new route you can follow the existing routes in the routes array.
-  1. The `type` key with the `collapse` value is used for a route.
-  2. The `type` key with the `title` value is used for a title inside the Sidenav. 
-  3. The `type` key with the `divider` value is used for a divider between Sidenav items.
-  4. The `name` key is used for the name of the route on the Sidenav.
-  5. The `key` key is used for the key of the route (It will help you with the key prop inside a loop).
-  6. The `icon` key is used for the icon of the route on the Sidenav, you have to add a node.
-  7. The `collapse` key is used for making a collapsible item on the Sidenav that has other routes
-  inside (nested routes), you need to pass the nested routes inside an array as a value for the `collapse` key.
-  8. The `route` key is used to store the route location which is used for the react router.
-  9. The `href` key is used to store the external links location.
-  10. The `title` key is only for the item with the type of `title` and its used for the title text on the Sidenav.
-  10. The `component` key is used to store the component of its route.
-*/
-
 // Soft UI Dashboard React layouts
 import Dashboard from "layouts/dashboard";
 import Tables from "layouts/tables";
 import Billing from "layouts/billing";
 import VirtualReality from "layouts/virtual-reality";
 import RTL from "layouts/rtl";
-import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 
@@ -60,6 +22,28 @@ import Users from "layouts/users";
 import UserOnboarding from "layouts/on-boarding/index";
 import Accounts from "layouts/accounts";
 import LinkAccount from "layouts/link-account";
+import UpworkProfile from "layouts/upwork-profile";
+import Profile from "layouts/bidbot-profile";
+import Overview from "layouts/profile";
+import Configuration from "layouts/configuration";
+import { AccountBox, AccountCircle, AddLink, ContactSupport, FileCopy, Group, Groups, Insights, ManageAccounts, NotificationImportant, Person, ViewKanban, Work } from "@mui/icons-material";
+import { Link } from "@mui/material";
+import Jobs from "layouts/jobs";
+import Connects from "layouts/connects";
+import JobTracking from "layouts/jobs-tracking";
+import NotificationItem from "examples/Items/NotificationItem";
+import NotificationsPage from "layouts/notifications";
+import JobDetails from "layouts/job-details";
+import Kanban from "layouts/kanban";
+import Team from "layouts/team";
+import HelpAndSupport from "layouts/support";
+import Reports from "layouts/reports";
+import JobProposalReport from "layouts/reports/pages/JobProposalReport";
+import UserAccountReport from "layouts/reports/pages/UserAccountReport";
+import FinancialReport from "layouts/reports/pages/FinancialReport";
+import KanbanProjectsReport from "layouts/reports/pages/KanbanProjectsReport";
+import AdminReport from "layouts/reports/pages/AdminReport";
+import AnalyticsLogsReport from "layouts/reports/pages/AnalyticsLogsReport";
 
 const routes = [
   {
@@ -116,10 +100,20 @@ const routes = [
   {
     type: "collapse",
     name: "Profile",
-    key: "profile",
-    route: "/profile",
+    key: "overview",
+    route: "/overview",
     icon: <CustomerSupport size="12px" />,
-    component: <Profile />,
+    component: <Overview />,
+    noCollapse: true,
+    show: true,
+  },
+  {
+    type: "collapse",
+    name: "Configuration",
+    key: "configurations",
+    route: "/configurations",
+    icon: <Settings size="12px" />,
+    component: <Configuration />,
     noCollapse: true,
     show: true,
   },
@@ -164,7 +158,7 @@ const routes = [
     name: "Users",
     key: "users",
     route: "/users",
-    icon: <SpaceShip size="12px" />,
+    icon: <Group size="12px" />,
     component: <Users />,
     noCollapse: true,
     show: true,
@@ -174,12 +168,61 @@ const routes = [
     name: "Account Management",
     key: "accounts",
     route: "/accounts",
-    icon: <SpaceShip size="12px" />,
+    icon: <AccountBox size="12px" />,
     component: <Accounts />,
     noCollapse: true,
     show: true,
   },
-  
+  {
+    type: "collapse",
+    name: "Upwork Jobs",
+    key: "jobs",
+    route: "/jobs",
+    icon: <Work size="12px" />,
+    component: <Jobs />,
+    noCollapse: true,
+    show: true,
+  },
+  {
+    type: "collapse",
+    name: "Jobs Details",
+    key: "jobDetails",
+    route: "/jobs/:id/details",
+    icon: <Work size="12px" />,
+    component: <JobDetails />,
+    noCollapse: true,
+    show: false,
+  },
+  {
+    type: "collapse",
+    name: "Jobs Tracking",
+    key: "tracking",
+    route: "/tracking",
+    icon: <Insights size="12px" />,
+    component: <JobTracking />,
+    noCollapse: true,
+    show: true,
+  },
+  {
+    type: "collapse",
+    name: "Kanban",
+    key: "kanban",
+    route: "/kanban",
+    icon: <ViewKanban size="12px" />,
+    component: <Kanban />,
+    noCollapse: true,
+    show: true,
+  },
+  {
+    type: "collapse",
+    name: "Team Management",
+    key: "team",
+    route: "/team",
+    icon: <Groups size="12px" />,
+    component: <Team />,
+    noCollapse: true,
+    show: true,
+  },
   // {
   //   type: "collapse",
   //   name: "Roles Management",
@@ -212,7 +255,7 @@ const routes = [
     name: "Onboarding",
     key: "onboarding",
     route: "/onboarding",
-    icon: <SpaceShip size="12px" />,
+    icon: <ManageAccounts size="12px" />,
     component: <UserOnboarding />,
     noCollapse: true,
     show: true,
@@ -222,11 +265,143 @@ const routes = [
     name: "Link Account",
     key: "linkAccount",
     route: "/accounts/link",
-    icon: <SpaceShip size="12px" />,
+    icon: <AddLink size="12px" />,
     component: <LinkAccount />,
     noCollapse: true,
     show: false,
-  }
+  },
+  {
+    type: "collapse",
+    name: "Upwork Profile",
+    key: "upworkProfile",
+    route: "/accounts/:id/profile",
+    icon: <Person size="12px" />,
+    component: <UpworkProfile />,
+    noCollapse: true,
+    show: false,
+  },
+  {
+    type: "collapse",
+    name: "Upwork Profile",
+    key: "upworkProfile",
+    route: "/accounts/:id/connects",
+    icon: <Person size="12px" />,
+    component: <Connects />,
+    noCollapse: true,
+    show: false,
+  },
+  {
+    type: "collapse",
+    name: "BidBot Profile",
+    key: "profile",
+    route: "/profile",
+    icon: <Person size="12px" />,
+    component: <Profile />,
+    noCollapse: true,
+    show: true,
+  },
+  {
+    type: "collapse",
+    name: "BidBot Profile",
+    key: "usersProfile",
+    route: "users/profile/:id",
+    icon: <Person size="12px" />,
+    component: <Profile />,
+    noCollapse: false,
+    show: false,
+  },
+  {
+    type: "collapse",
+    name: "Notifications",
+    key: "notifications",
+    route: "/notifications",
+    icon: <NotificationImportant size="12px" />,
+    component: <NotificationsPage />,
+    noCollapse: true,
+    show: true,
+  },
+  {
+    type: "collapse",
+    name: "Reports",
+    key: "reports",
+    route: "/reports",
+    icon: <FileCopy size="12px" />,
+    component: <Reports />,
+    noCollapse: true,
+    show: true,
+  },
+  {
+    type: "collapse",
+    name: "Reports",
+    key: "reports",
+    route: "/reports/jobs-proposals",
+    icon: <FileCopy size="12px" />,
+    component: <JobProposalReport />,
+    noCollapse: true,
+    show: false,
+  },
+  {
+    type: "collapse",
+    name: "Reports",
+    key: "reports",
+    route: "/reports/user-account",
+    icon: <FileCopy size="12px" />,
+    component: <UserAccountReport />,
+    noCollapse: true,
+    show: false,
+  },
+  {
+    type: "collapse",
+    name: "Reports",
+    key: "reports",
+    route: "/reports/financial",
+    icon: <FileCopy size="12px" />,
+    component: <FinancialReport />,
+    noCollapse: true,
+    show: false,
+  },
+  {
+    type: "collapse",
+    name: "Reports",
+    key: "reports",
+    route: "/reports/kanban-projects",
+    icon: <FileCopy size="12px" />,
+    component: <KanbanProjectsReport />,
+    noCollapse: true,
+    show: false,
+  },
+  {
+    type: "collapse",
+    name: "Reports",
+    key: "reports",
+    route: "/reports/analytics-logs",
+    icon: <FileCopy size="12px" />,
+    component: <AnalyticsLogsReport />,
+    noCollapse: true,
+    show: false,
+  },
+  {
+    type: "collapse",
+    name: "Reports",
+    key: "reports",
+    route: "/reports/admin",
+    icon: <FileCopy size="12px" />,
+    component: <AdminReport />,
+    noCollapse: true,
+    show: false,
+  },
+
+  {
+    type: "collapse",
+    name: "Help & Support",
+    key: "support",
+    route: "/support",
+    icon: <ContactSupport size="12px" />,
+    component: <HelpAndSupport />,
+    noCollapse: true,
+    show: true,
+  },
+
 
 
 ];

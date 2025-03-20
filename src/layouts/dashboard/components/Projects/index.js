@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Soft UI Dashboard React - v4.0.1
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import { useState } from "react";
 
 // @mui material components
@@ -24,15 +9,21 @@ import MenuItem from "@mui/material/MenuItem";
 // Soft UI Dashboard React components
 import SoftBox from "components/SoftBox";
 import SoftTypography from "components/SoftTypography";
+import logoXD from "assets/images/logos/upwork.png";
+
 
 // Soft UI Dashboard Materail-UI example components
 import Table from "examples/Tables/Table";
+import PropTypes from "prop-types";
+import SoftProgress from "components/SoftProgress";
 
-// Data
-import data from "layouts/dashboard/components/Projects/data";
 
-function Projects() {
-  const { columns, rows } = data();
+Projects.propTypes = {
+  data: PropTypes.array,
+};
+
+function Projects({data}) {
+  // const { columns, rows } = data();
   const [menu, setMenu] = useState(null);
 
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);
@@ -59,12 +50,53 @@ function Projects() {
     </Menu>
   );
 
+  
+  const processData = () => {
+    return {
+      columns: [
+        { name: "jobTitle", align: "left" },
+        { name: "budget", align: "center" },
+        { name: "type", align: "center" },
+        { name: "duration", align: "center" },
+        { name: "country", align: "center" },
+      ],
+  
+      rows: data ? data.map(jobItem => {
+        return {
+          jobTitle: [logoXD, jobItem.job.title],
+          budget: (
+            <SoftTypography variant="caption" color="text" fontWeight="medium">
+              { jobItem.jobType === "fixed" ? `$${jobItem.bidPrice}` : `$${jobItem.hourlyPrice} /hr` }
+            </SoftTypography>
+          ),
+          type: (
+            <SoftTypography variant="caption" color="text" fontWeight="medium">
+              {jobItem.jobType}
+            </SoftTypography>
+          ),
+          duration: (
+            <SoftTypography variant="caption" color="text" fontWeight="medium">
+              {jobItem.jobDuration}
+            </SoftTypography>
+          ),
+          country: (
+            <SoftTypography variant="caption" color="text" fontWeight="medium">
+              {jobItem.job.country}
+            </SoftTypography>
+          ),
+        }
+      }) : [],
+    }
+    
+  
+  }
+
   return (
     <Card>
       <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <SoftBox>
           <SoftTypography variant="h6" gutterBottom>
-            Projects
+            Projects / Jobs
           </SoftTypography>
           <SoftBox display="flex" alignItems="center" lineHeight={0}>
             <Icon
@@ -77,16 +109,10 @@ function Projects() {
               done
             </Icon>
             <SoftTypography variant="button" fontWeight="regular" color="text">
-              &nbsp;<strong>30 done</strong> this month
+              &nbsp;<strong>{ data ? data.length : 0 }</strong> active jobs
             </SoftTypography>
           </SoftBox>
         </SoftBox>
-        <SoftBox color="text" px={2}>
-          <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={openMenu}>
-            more_vert
-          </Icon>
-        </SoftBox>
-        {renderMenu}
       </SoftBox>
       <SoftBox
         sx={{
@@ -98,7 +124,7 @@ function Projects() {
           },
         }}
       >
-        <Table columns={columns} rows={rows} />
+        <Table columns={processData().columns} rows={processData().rows} />
       </SoftBox>
     </Card>
   );

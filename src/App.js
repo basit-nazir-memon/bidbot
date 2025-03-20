@@ -28,7 +28,7 @@ import createCache from "@emotion/cache";
 import { useSoftUIController, setMiniSidenav, setOpenConfigurator } from "context";
 
 // Images
-import brand from "assets/images/logo-ct.png";
+import brand from "assets/images/logos/logo_color.png";
 import NotFound from "layouts/common/NotFound";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
@@ -36,6 +36,8 @@ import ResetPassword from "layouts/authentication/reset-password";
 import ForgotPassword from "layouts/authentication/forgot-password";
 import routes from "routes";
 import LinkAccount from "layouts/link-account";
+import AdminDashboard from "layouts/admin-dashboard";
+import SupportDashboard from "layouts/support-dashboard";
 
 export default function App() {
   const [controller, dispatch] = useSoftUIController();
@@ -99,6 +101,12 @@ export default function App() {
           }
 
           if (route.route) {
+            if (route.key == 'dashboard' && localStorage.getItem('role') == 'Admin'){
+              return <Route exact path={route.route} element={<AdminDashboard />} key={route.key} />
+            }
+            if (route.key == 'dashboard' && localStorage.getItem('role') == 'Support Team'){
+              return <Route exact path={route.route} element={<SupportDashboard />} key={route.key} />
+            }
               return (
                   <Route exact path={route.route} element={route.component} key={route.key} />
               );
@@ -142,7 +150,7 @@ export default function App() {
             <Sidenav
               color={sidenavColor}
               brand={brand}
-              brandName="BidBot"
+              brandName=""
               routes={routesFilter()}
               onMouseEnter={handleOnMouseEnter}
               onMouseLeave={handleOnMouseLeave}
