@@ -7,11 +7,12 @@ const stripePromise = loadStripe(envConfig.stripePublicKey);
 // Function to create a checkout session
 export const createCheckoutSession = async (amount, accountType, planType) => {
     try {
+        
         amount = amount.replace('$', '')
         const response = await fetch(`${envConfig.backend}/create-checkout-session`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json', 
                 'Authorization': `Bearer ${localStorage.getItem('auth-token')}`,
             },
             body: JSON.stringify({
