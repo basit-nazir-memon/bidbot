@@ -21,9 +21,9 @@ import PageLayout from "examples/LayoutContainers/PageLayout";
 
 // Images
 import heroBg from "assets/images/curved-images/curved-6.jpg";
-import feature1 from "assets/images/home-decor-1.jpg";
-import feature2 from "assets/images/home-decor-2.jpg";
-import feature3 from "assets/images/home-decor-3.jpg";
+import feature1 from "assets/images/1.png";
+import feature2 from "assets/images/2.png";
+import feature3 from "assets/images/1.png";
 
 import ivana from "assets/images/ivana-square.jpg";
 import bruce from "assets/images/bruce-mars.jpg";
