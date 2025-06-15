@@ -120,7 +120,7 @@ function DefaultProjectCard({ image, label, title, description, action, authors 
             onClick={handleToggle}
           >
             {description}
-            {!isExpanded && description.length > 0 && " ...see more"}
+            {!isExpanded && description && description?.length > 0 && " ...see more"}
           </SoftTypography>
         </SoftBox>
         <SoftBox display="flex" justifyContent="space-between" alignItems="center">

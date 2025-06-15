@@ -289,7 +289,7 @@ function Profile() {
                     profileData.projects.map((project, idx) => (
                       <Grid item xs={12} md={6} xl={3} key={idx}>
                         <DefaultProjectCard
-                          image={project.media.length > 0 ? project.media[0] : 'https://shorturl.at/AeYdl'}
+                          image={project?.media && project?.media?.length > 0 ? project.media[0] : 'https://shorturl.at/AeYdl'}
                           label={project.published}
                           title={project.title}
                           description={project.description}

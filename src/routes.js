@@ -6,6 +6,7 @@ import VirtualReality from "layouts/virtual-reality";
 import RTL from "layouts/rtl";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
+import Homepage from "layouts/homepage";
 
 // Soft UI Dashboard React icons
 import Shop from "examples/Icons/Shop";

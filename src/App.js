@@ -38,6 +38,7 @@ import routes from "routes";
 import LinkAccount from "layouts/link-account";
 import AdminDashboard from "layouts/admin-dashboard";
 import SupportDashboard from "layouts/support-dashboard";
+import Homepage from "layouts/homepage";
 
 export default function App() {
   const [controller, dispatch] = useSoftUIController();
@@ -162,6 +163,7 @@ export default function App() {
         {layout === "vr" && <Configurator />}
         <Routes>
           {getRoutes(routesFilter())}
+          <Route exact path={'/'} element={<Homepage />} key={"home"} />
           <Route exact path={'/authentication/sign-in'} element={<SignIn/>} key={"sign-in"} />
           <Route exact path={'/authentication/sign-up'} element={<SignUp/>} key={"sign-up"} />
           <Route exact path={'/authentication/forgot-password'} element={<ForgotPassword />} key={'forgot-password'} />
@@ -191,6 +193,7 @@ export default function App() {
       {layout === "vr" && <Configurator />}
       <Routes>
         {getRoutes(routesFilter())}
+        <Route exact path={'/'} element={<Homepage />} key={"home"} />
         <Route exact path={'/authentication/sign-in'} element={<SignIn/>} key={"sign-in"} />
         <Route exact path={'/authentication/sign-up'} element={<SignUp/>} key={"sign-up"} />
         <Route exact path={'/authentication/forgot-password'} element={<ForgotPassword />} key={'forgot-password'} />

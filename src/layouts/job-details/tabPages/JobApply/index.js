@@ -30,7 +30,9 @@ function JobApply() {
   const [isLoadingUpdate, setIsLoadingUpdate] = useState(false);
 
   const [durationType, setDurationType] = useState("lessThan1Month");
-  const [jobCost, setJobCost] = useState(300);
+  const [jobCost, setJobCost] = useState(0);
+  
+  
 
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
   const navigate = useNavigate();
@@ -114,6 +116,7 @@ function JobApply() {
         setJobCost(response?.data?.jobType == "fixed" ? response?.data?.suggestedJob?.bidPrice : response?.data?.suggestedJob?.hourlyPrice)
         setDurationType(response?.data?.suggestedJob?.jobDuration || "")
         setJobData(response?.data);
+        setJobCost(response?.data && response?.data?.job?.type === "fixed" ?  response?.data?.job?.budget : response?.data?.job?.maxHourlyPrice)
         console.log(response.data);
       } catch (err) {
         console.error("Error fetching job details:", err);

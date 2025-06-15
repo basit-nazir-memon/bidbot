@@ -310,11 +310,11 @@ function getJobName(jobId) {
 }
 
 function getInitials(name) {
-  return name
+  return name ? name
     .split(" ")
     .map((part) => part[0])
     .join("")
     .toUpperCase()
-    .substring(0, 2)
+    .substring(0, 2) : ""
 }
 

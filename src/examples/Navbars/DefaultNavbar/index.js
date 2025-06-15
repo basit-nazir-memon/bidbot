@@ -98,15 +98,15 @@ function DefaultNavbar({ transparent, light, action }) {
         </SoftBox>
         <SoftBox color="inherit" display={{ xs: "none", lg: "flex" }} m={0} p={0}>
           <DefaultNavbarLink name="Home" route="/" light={light} />
-          <DefaultNavbarLink name="About Us" route="/about-us" light={light} />
+          <DefaultNavbarLink name="About Us" route="/#features" light={light} />
           <DefaultNavbarLink
             name="Subscription Plans"
-            route="/plans"
+            route="/#pricing"
             light={light}
           />
           <DefaultNavbarLink
-            name="Blogs"
-            route="/blogs"
+            name="FAQ"
+            route="/#faq"
             light={light}
           />
         </SoftBox>
