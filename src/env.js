@@ -4,6 +4,6 @@ export const envConfig = {
     model: 'http://localhost:8000',
     stripePublicKey: 'pk_test_51RGReLDEQxcJeBcpliGsp8FOdXwZ4nhpHg87qU8WX3WLFZG0RazVQ8KB6LOVz5zhvRFUbGEWfKK7t7ZoIlHkvnQ600712Lkh8H', // Replace with your Stripe public key
     // backend: 'https://bidbot-backend.onrender.com'
-    backend: 'https://8fcc-39-43-181-101.ngrok-free.app',
+    backend: 'https://e26b-116-71-9-246.ngrok-free.app',
 };
 
